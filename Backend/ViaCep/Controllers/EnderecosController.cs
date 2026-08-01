@@ -1,6 +1,10 @@
-﻿namespace ViaCep.Controllers
+using Microsoft.AspNetCore.Mvc;
+
+namespace ViaCep.Controllers
 {
-    public class EnderecosController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class EnderecosController : ControllerBase
     {
     }
 }
