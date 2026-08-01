@@ -1,0 +1,155 @@
+@model IEnumerable<ViaCep.ViewModels.EnderecoViewModel>
+@{
+    ViewData["Title"] = "Meus Endereços";
+}
+
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-title h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    .page-title p {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+    }
+
+    .actions-bar {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    th {
+        background-color: var(--background);
+        padding: 0.85rem 1rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        border-bottom: 1px solid var(--border);
+    }
+
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.9rem;
+        vertical-align: middle;
+    }
+
+    tr:hover {
+        background-color: #F1F5F9;
+    }
+
+    .cep-badge {
+        background-color: var(--primary-light);
+        color: var(--primary);
+        font-weight: 600;
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="page-header">
+    <div class="page-title">
+        <h1>Meus Endereços 🏡</h1>
+        <p>Gerencie seus endereços salvos ou faça a exportação dos dados.</p>
+    </div>
+    <div class="actions-bar">
+        <a asp-action="ExportarCsv" class="btn btn-secondary">
+            📥 Exportar em CSV
+        </a>
+        <a asp-action="Criar" class="btn btn-primary">
+            ➕ Novo Endereço
+        </a>
+    </div>
+</div>
+
+<div class="card" style="padding: 0; overflow: hidden;">
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <h3>Nenhum endereço cadastrado</h3>
+            <p style="margin-top: 0.5rem; margin-bottom: 1.5rem;">Você ainda não possui endereços salvos. Clique no botão abaixo para adicionar.</p>
+            <a asp-action="Criar" class="btn btn-primary">Cadastrar Primeiro Endereço</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>CEP</th>
+                        <th>Logradouro</th>
+                        <th>Número</th>
+                        <th>Complemento</th>
+                        <th>Bairro</th>
+                        <th>Cidade / UF</th>
+                        <th style="text-align: right;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <span class="cep-badge">@item.Cep</span>
+                            </td>
+                            <td><strong>@item.Logradouro</strong></td>
+                            <td>@item.Numero</td>
+                            <td>@(string.IsNullOrWhiteSpace(item.Complemento) ? "-" : item.Complemento)</td>
+                            <td>@item.Bairro</td>
+                            <td>@item.Cidade / @item.Uf</td>
+                            <td style="text-align: right; white-space: nowrap;">
+                                <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-secondary btn-sm" title="Editar">
+                                    ✏️ Editar
+                                </a>
+                                <form asp-action="Excluir" asp-route-id="@item.Id" method="post" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja excluir este endereço?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Excluir">
+                                        🗑️ Excluir
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

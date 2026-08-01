@@ -1,0 +1,193 @@
+@model ViaCep.ViewModels.EnderecoFormViewModel
+@{
+    ViewData["Title"] = "Editar Endereço";
+}
+
+<style>
+    .form-header {
+        margin-bottom: 2rem;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1.25rem;
+    }
+
+    .col-12 { grid-column: span 12; }
+    .col-8 { grid-column: span 8; }
+    .col-6 { grid-column: span 6; }
+    .col-4 { grid-column: span 4; }
+    .col-5 { grid-column: span 5; }
+    .col-2 { grid-column: span 2; }
+
+    @@media (max-width: 768px) {
+        .col-8, .col-6, .col-4, .col-5, .col-2 {
+            grid-column: span 12;
+        }
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.95rem;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .cep-container {
+        position: relative;
+    }
+
+    .cep-loading {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.85rem;
+        color: var(--primary);
+        font-weight: 600;
+        display: none;
+    }
+
+    .text-danger {
+        color: var(--danger);
+        font-size: 0.8rem;
+        margin-top: 0.35rem;
+        display: block;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+    }
+</style>
+
+<div class="form-header">
+    <h1>Editar Endereço ✏️</h1>
+    <p style="color: var(--text-muted);">Altere as informações do endereço cadastrado ou pesquise outro CEP.</p>
+</div>
+
+<div class="card">
+    <form asp-action="Editar" asp-route-id="@Model.Id" method="post" id="enderecoForm">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-grid">
+            <div class="form-group col-4">
+                <label asp-for="Cep"></label>
+                <div class="cep-container">
+                    <input asp-for="Cep" id="inputCep" class="form-control" placeholder="00000-000" maxlength="9" autofocus />
+                    <span id="cepLoading" class="cep-loading">🔍 Buscando...</span>
+                </div>
+                <span asp-validation-for="Cep" class="text-danger"></span>
+                <span id="cepStatus" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; display: block;"></span>
+            </div>
+
+            <div class="form-group col-8">
+                <label asp-for="Logradouro"></label>
+                <input asp-for="Logradouro" id="inputLogradouro" class="form-control" />
+                <span asp-validation-for="Logradouro" class="text-danger"></span>
+            </div>
+
+            <div class="form-group col-4">
+                <label asp-for="Numero"></label>
+                <input asp-for="Numero" id="inputNumero" class="form-control" />
+                <span asp-validation-for="Numero" class="text-danger"></span>
+            </div>
+
+            <div class="form-group col-8">
+                <label asp-for="Complemento"></label>
+                <input asp-for="Complemento" id="inputComplemento" class="form-control" />
+                <span asp-validation-for="Complemento" class="text-danger"></span>
+            </div>
+
+            <div class="form-group col-5">
+                <label asp-for="Bairro"></label>
+                <input asp-for="Bairro" id="inputBairro" class="form-control" />
+                <span asp-validation-for="Bairro" class="text-danger"></span>
+            </div>
+
+            <div class="form-group col-5">
+                <label asp-for="Cidade"></label>
+                <input asp-for="Cidade" id="inputCidade" class="form-control" />
+                <span asp-validation-for="Cidade" class="text-danger"></span>
+            </div>
+
+            <div class="form-group col-2">
+                <label asp-for="Uf"></label>
+                <input asp-for="Uf" id="inputUf" class="form-control" maxlength="2" style="text-transform: uppercase;" />
+                <span asp-validation-for="Uf" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary">Atualizar Endereço</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputCep = document.getElementById('inputCep');
+            const cepLoading = document.getElementById('cepLoading');
+            const cepStatus = document.getElementById('cepStatus');
+
+            const inputLogradouro = document.getElementById('inputLogradouro');
+            const inputBairro = document.getElementById('inputBairro');
+            const inputCidade = document.getElementById('inputCidade');
+            const inputUf = document.getElementById('inputUf');
+
+            async function consultarViaCep(cep) {
+                const cepLimpo = cep.replace(/\D/g, '');
+                if (cepLimpo.Length !== 8) return;
+
+                cepLoading.style.display = 'block';
+                cepStatus.textContent = 'Buscando dados no ViaCEP...';
+
+                try {
+                    const response = await fetch(`/api/viacep/${cepLimpo}`);
+                    if (!response.ok) throw new Error('CEP não encontrado');
+
+                    const dados = await response.json();
+
+                    inputLogradouro.value = dados.logradouro || '';
+                    inputBairro.value = dados.bairro || '';
+                    inputCidade.value = dados.localidade || '';
+                    inputUf.value = (dados.uf || '').toUpperCase();
+
+                    cepStatus.textContent = '✅ Endereço localizado via ViaCEP!';
+                    cepStatus.style.color = 'var(--success)';
+                } catch (error) {
+                    cepStatus.textContent = '⚠️ CEP não localizado.';
+                    cepStatus.style.color = 'var(--danger)';
+                } finally {
+                    cepLoading.style.display = 'none';
+                }
+            }
+
+            inputCep.addEventListener('blur', function () {
+                if (this.value) consultarViaCep(this.value);
+            });
+        });
+    </script>
+}

@@ -145,8 +145,8 @@ namespace ViaCep.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [AllowAnonymous]
         [HttpGet("api/viacep/{cep}")]
-        [HttpGet]
         public async Task<IActionResult> BuscarCep(string cep)
         {
             var resultado = await _viaCepService.BuscarPorCepAsync(cep);
