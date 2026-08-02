@@ -172,6 +172,17 @@ Assim que a aplicação iniciar, o navegador abrirá automaticamente a interface
 
 ---
 
+## 📊 Atendimento aos Critérios de Avaliação
+
+| Critério de Avaliação | Como foi Atendido no Projeto |
+| :--- | :--- |
+| **1. Qualidade do Código** *(Legibilidade, Estrutura e Organização)* | Arquitetura limpa em camadas (`Controllers`, `Services`, `Repositories`, `Models`, `ViewModels`, `Middlewares`). Nomenclatura C# padronizada, ViewModels fortemente tipadas isolando as entidades e histórico de commits semântico (*Conventional Commits*). |
+| **2. Boas Práticas, Segurança e Design Patterns** | Aplicação do **Strategy Pattern** para exportação flexível, **Repository & Unit of Work Patterns** para persistência, **Backend Proxy Pattern** para o ViaCEP, criptografia de senhas com **BCrypt**, proteção **Anti-Forgery Token (CSRF)** e **Middleware Global de Exceções**. |
+| **3. Funcionalidade do Sistema** | CRUD completo de endereços por usuário, consulta automática de CEP via AJAX com preenchimento instantâneo, ajuste manual de campos, exportação CSV e entrega dos scripts DDL nativos ([`script.sql`](script.sql)). |
+| **4. Design e Usabilidade (UX/UI)** | Interface responsiva estilizada com **Tailwind CSS v3**, ícones vetoriais **Font Awesome 6**, tipografia **Google Fonts** (*Sora* & *DM Sans*), indicadores visuais de carregamento em tempo real e mensagens de feedback (*Toast/TempData*). |
+
+---
+
 ## 📄 Licença
 
 Este projeto foi desenvolvido para fins de teste técnico e avaliação de desenvolvimento de software em C# .NET.
