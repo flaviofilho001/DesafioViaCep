@@ -109,6 +109,10 @@ DesafioViaCep/
 ### **Pré-requisitos**
 - [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) instalado.
 - SQL Server ou SQL Server LocalDB (`(localdb)\mssqllocaldb`).
+- Ferramenta Global do Entity Framework Core (`dotnet-ef`):
+  ```bash
+  dotnet tool install --global dotnet-ef
+  ```
 
 ---
 
@@ -121,27 +125,94 @@ cd DesafioViaCep/Backend/ViaCep
 
 ---
 
-### **2. Criar o Banco de Dados e Executar**
+### **2. Configuração do Banco de Dados e Execução**
 
-Você pode criar a estrutura do banco de dados de **duas formas**:
+#### **Cenário A: Windows com SQL Server LocalDB (Padrão de Desenvolvimento)**
 
-#### **Opção A: Via Entity Framework Core Migrations (Recomendado)**
-Execute o comando abaixo no terminal dentro de `Backend/ViaCep`:
-
+##### **Via Terminal / CLI:**
 ```bash
-# Executa a migration e cria o banco ViaCepDb no LocalDB
+# 1. Aplica a migration e cria o banco ViaCepDb no LocalDB
 dotnet ef database update
 
-# Executa o projeto C#
+# 2. Executa a aplicação C# .NET
 dotnet run
 ```
 
-#### **Opção B: Via Script SQL DDL Nativo**
-Execute o arquivo [`script.sql`](script.sql) no SQL Server Management Studio (SSMS) ou VS Server Explorer, e em seguida execute:
+##### **Via Visual Studio 2022 / 2026:**
+1. Abra a solução `ViaCep.csproj` no Visual Studio.
+2. *(Opcional)* Clique com o botão direito no projeto `ViaCep` ➔ **Gerenciar Segredos do Usuário** (*Manage User Secrets*) e cole:
+   ```json
+   {
+     "ConnectionStrings": {
+       "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=ViaCepDb;Trusted_Connection=True;TrustServerCertificate=True;"
+     }
+   }
+   ```
+3. Vá no menu: **Ferramentas** ➔ **Gerenciador de Pacotes NuGet** ➔ **Console do Gerenciador de Pacotes** (*Package Manager Console*).
+4. Rode o comando:
+   ```powershell
+   Update-Database
+   ```
+5. Pressione `F5` ou clique em **Iniciar (Play)** no Visual Studio.
+
+---
+
+#### **Cenário B: Conectando a Outros Bancos via Variáveis de Ambiente (Windows, Linux, macOS)**
+
+Se você estiver em outro computador ou usando um servidor SQL Server / Docker / Nuvem com credenciais customizadas, defina a variável de ambiente `ConnectionStrings__DefaultConnection` (com dois underlines):
+
+##### **No Windows PowerShell:**
+```powershell
+$env:ConnectionStrings__DefaultConnection="Server=SEU_SERVIDOR;Database=ViaCepDb;User Id=sa;Password=SuaSenha123;TrustServerCertificate=True;"
+dotnet ef database update
+dotnet run
+```
+
+##### **No Windows CMD:**
+```cmd
+set ConnectionStrings__DefaultConnection=Server=SEU_SERVIDOR;Database=ViaCepDb;User Id=sa;Password=SuaSenha123;TrustServerCertificate=True;
+dotnet ef database update
+dotnet run
+```
+
+##### **No Linux / macOS (Terminal Bash ou Zsh):**
+```bash
+export ConnectionStrings__DefaultConnection="Server=SEU_SERVIDOR;Database=ViaCepDb;User Id=sa;Password=SuaSenha123;TrustServerCertificate=True;"
+dotnet ef database update
+dotnet run
+```
+
+##### **Ou diretamente via argumento da CLI no `dotnet run`:**
+```bash
+dotnet run --ConnectionStrings:DefaultConnection="Server=SEU_SERVIDOR;Database=ViaCepDb;User Id=sa;Password=SuaSenha123;TrustServerCertificate=True;"
+```
+
+---
+
+#### **Cenário C: Criar o Banco via Script SQL DDL Nativo**
+Caso prefira não usar as migrations do EF Core, execute o script nativo [`script.sql`](script.sql) diretamente no SQL Server Management Studio (SSMS) ou VS Server Explorer, e em seguida rode a aplicação:
 
 ```bash
 dotnet run
 ```
+
+---
+
+### 🔧 Solução de Problemas Comuns (Troubleshooting)
+
+- **Serviço do LocalDB Parado no Windows**:
+  Se o comando `dotnet ef database update` informar falha de conexão com o `(localdb)\mssqllocaldb`, rode no CMD:
+  ```cmd
+  sqllocaldb start MSSQLLocalDB
+  ```
+
+- **Ferramenta `dotnet-ef` não encontrada**:
+  Caso receba a mensagem de que o comando `dotnet ef` não existe, execute:
+  ```bash
+  dotnet tool install --global dotnet-ef
+  # Ou para atualizar:
+  dotnet tool update --global dotnet-ef
+  ```
 
 ---
 
