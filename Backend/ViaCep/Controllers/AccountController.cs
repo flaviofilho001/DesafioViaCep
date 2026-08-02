@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +20,11 @@ namespace ViaCep.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                return RedirectToAction("Index", "Enderecos");
+            }
+
             return View(new LoginViewModel());
         }
 
@@ -37,17 +42,43 @@ namespace ViaCep.Controllers
                 return View(model);
             }
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-                new Claim(ClaimTypes.Name, usuario.NomeUsuario)
-            };
-
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(identity));
-
+            await RealizarLoginHttpAsync(usuario.Id, usuario.NomeUsuario);
             return RedirectToAction("Index", "Enderecos");
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                return RedirectToAction("Index", "Enderecos");
+            }
+
+            return View(new RegisterViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
+            {
+                var usuario = await _usuarioService.RegistrarAsync(model.Nome, model.NomeUsuario, model.Senha);
+                
+                // Realiza o login automático após cadastro bem-sucedido
+                await RealizarLoginHttpAsync(usuario.Id, usuario.NomeUsuario);
+                
+                TempData["Sucesso"] = "Conta criada com sucesso! Seja bem-vindo.";
+                return RedirectToAction("Index", "Enderecos");
+            }
+            catch (ArgumentException ex)
+            {
+                ModelState.AddModelError(nameof(RegisterViewModel.NomeUsuario), ex.Message);
+                return View(model);
+            }
         }
 
         [Authorize]
@@ -59,6 +90,16 @@ namespace ViaCep.Controllers
             return RedirectToAction(nameof(Login));
         }
 
+        private async Task RealizarLoginHttpAsync(int usuarioId, string nomeUsuario)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, usuarioId.ToString()),
+                new Claim(ClaimTypes.Name, nomeUsuario)
+            };
 
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+        }
     }
 }
