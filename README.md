@@ -127,19 +127,27 @@ cd DesafioViaCep/Backend/ViaCep
 
 ### **2. Configuração do Banco de Dados e Execução**
 
-#### **Cenário A: Windows com SQL Server LocalDB (Padrão de Desenvolvimento)**
+#### **Cenário A: Windows com SQL Server LocalDB (Padrão de Desenvolvimento embutido no Visual Studio 2022 / 2026)**
+
+> 💡 *Nota: O **SQL Server Express LocalDB** vem instalado por padrão junto com o workload de desenvolvimento Web/Desktop do **Visual Studio 2022 e 2026** no Windows.*
 
 ##### **Via Terminal / CLI:**
 ```bash
-# 1. Aplica a migration e cria o banco ViaCepDb no LocalDB
+# 1. Restaura todos os pacotes NuGet do projeto
+dotnet restore
+
+# 2. Compila a aplicação C#
+dotnet build
+
+# 3. Aplica a migration e cria o banco ViaCepDb no LocalDB
 dotnet ef database update
 
-# 2. Executa a aplicação C# .NET
+# 4. Executa a aplicação C# .NET
 dotnet run
 ```
 
 ##### **Via Visual Studio 2022 / 2026:**
-1. Abra a solução `ViaCep.csproj` no Visual Studio.
+1. Abra a solução `ViaCep.csproj` no Visual Studio 2022 ou 2026.
 2. *(Opcional)* Clique com o botão direito no projeto `ViaCep` ➔ **Gerenciar Segredos do Usuário** (*Manage User Secrets*) e cole:
    ```json
    {
@@ -153,7 +161,7 @@ dotnet run
    ```powershell
    Update-Database
    ```
-5. Pressione `F5` ou clique em **Iniciar (Play)** no Visual Studio.
+5. Pressione `F5` ou clique no botão **Iniciar (Play)** no Visual Studio.
 
 ---
 
