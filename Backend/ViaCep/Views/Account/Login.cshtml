@@ -3,122 +3,70 @@
     ViewData["Title"] = "Login";
 }
 
-<style>
-    .login-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: calc(80vh - 100px);
-    }
-
-    .login-card {
-        width: 100%;
-        max-width: 420px;
-        padding: 2.5rem;
-    }
-
-    .login-header {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-
-    .login-header h2 {
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: var(--text-main);
-        margin-bottom: 0.5rem;
-    }
-
-    .login-header p {
-        color: var(--text-muted);
-        font-size: 0.9rem;
-    }
-
-    .form-group {
-        margin-bottom: 1.25rem;
-    }
-
-    .form-group label {
-        display: block;
-        font-weight: 600;
-        font-size: 0.875rem;
-        margin-bottom: 0.5rem;
-        color: var(--text-main);
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        font-size: 0.95rem;
-        transition: all 0.2s ease;
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-    }
-
-    .text-danger {
-        color: var(--danger);
-        font-size: 0.8rem;
-        margin-top: 0.35rem;
-        display: block;
-    }
-
-    .validation-summary {
-        background-color: #FEF2F2;
-        border: 1px solid #FCA5A5;
-        border-radius: 8px;
-        padding: 0.85rem;
-        margin-bottom: 1.5rem;
-        color: #991B1B;
-        font-size: 0.875rem;
-    }
-
-    .btn-block {
-        width: 100%;
-        padding: 0.85rem;
-        font-size: 1rem;
-    }
-</style>
-
-<div class="login-wrapper">
-    <div class="card login-card">
-        <div class="login-header">
-            <h2>Bem-vindo! 🔐</h2>
-            <p>Informe suas credenciais para acessar o gerenciador de endereços.</p>
+<div class="min-h-[75vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-200/80 p-8 space-y-8">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-indigo-50 border border-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 text-2xl mx-auto shadow-inner mb-4">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h2 class="font-sora text-2xl font-bold text-slate-900 tracking-tight">
+                Bem-vindo de volta
+            </h2>
+            <p class="mt-2 text-sm text-slate-500 font-sans">
+                Informe suas credenciais para acessar o gerenciador.
+            </p>
         </div>
 
-        <form asp-controller="Account" asp-action="Login" method="post">
+        <form asp-controller="Account" asp-action="Login" method="post" class="space-y-6">
             @Html.AntiForgeryToken()
 
             @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty]?.Errors.Count > 0)
             {
-                <div class="validation-summary">
+                <div class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm space-y-1">
                     @foreach (var error in ViewData.ModelState[string.Empty]!.Errors)
                     {
-                        <p>⚠️ @error.ErrorMessage</p>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-exclamation text-rose-500"></i>
+                            <span>@error.ErrorMessage</span>
+                        </div>
                     }
                 </div>
             }
 
-            <div class="form-group">
-                <label asp-for="NomeUsuario"></label>
-                <input asp-for="NomeUsuario" class="form-control" placeholder="Digite seu usuário..." autofocus />
-                <span asp-validation-for="NomeUsuario" class="text-danger"></span>
+            <div class="space-y-2">
+                <label asp-for="NomeUsuario" class="block text-sm font-semibold text-slate-700">
+                    Usuário
+                </label>
+                <div class="relative rounded-xl shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-user text-sm"></i>
+                    </div>
+                    <input asp-for="NomeUsuario" 
+                           class="block w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all"
+                           placeholder="Digite seu usuário..." 
+                           autofocus />
+                </div>
+                <span asp-validation-for="NomeUsuario" class="text-xs text-rose-600 font-medium"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Senha"></label>
-                <input asp-for="Senha" class="form-control" placeholder="Digite sua senha..." />
-                <span asp-validation-for="Senha" class="text-danger"></span>
+            <div class="space-y-2">
+                <label asp-for="Senha" class="block text-sm font-semibold text-slate-700">
+                    Senha
+                </label>
+                <div class="relative rounded-xl shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-key text-sm"></i>
+                    </div>
+                    <input asp-for="Senha" 
+                           class="block w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all"
+                           placeholder="Digite sua senha..." />
+                </div>
+                <span asp-validation-for="Senha" class="text-xs text-rose-600 font-medium"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">
-                Entrar no Sistema
+            <button type="submit" 
+                    class="w-full flex items-center justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all transform active:scale-[0.99]">
+                <i class="fa-solid fa-right-to-bracket mr-2"></i> Entrar no Sistema
             </button>
         </form>
     </div>

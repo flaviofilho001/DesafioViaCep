@@ -1,252 +1,97 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="h-full bg-slate-50">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ViaCEP Manager</title>
+
+    <!-- Google Fonts: Sora (Títulos) e DM Sans (Corpo) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Sora:wght@100..800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome 6 (Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <!-- Tailwind CSS v3 via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sora: ['Sora', 'sans-serif'],
+                        sans: ['DM Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --primary: #4F46E5;
-            --primary-hover: #4338CA;
-            --primary-light: #EEF2FF;
-            --secondary: #0EA5E9;
-            --success: #10B981;
-            --danger: #EF4444;
-            --background: #F8FAFC;
-            --surface: #FFFFFF;
-            --text-main: #0F172A;
-            --text-muted: #64748B;
-            --border: #E2E8F0;
-            --radius: 12px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Sora', sans-serif;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-
         body {
-            background-color: var(--background);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            background-color: var(--surface);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: var(--shadow);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: var(--primary);
-        }
-
-        .brand-badge {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 0.35rem 0.65rem;
-            border-radius: 8px;
-            font-size: 1.1rem;
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-greeting {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .user-name {
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        main {
-            flex: 1;
-            max-width: 1200px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 2rem 1.5rem;
-        }
-
-        .alert {
-            padding: 1rem 1.25rem;
-            border-radius: var(--radius);
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .alert-success {
-            background-color: #ECFDF5;
-            color: #065F46;
-            border: 1px solid #A7F3D0;
-        }
-
-        .alert-danger {
-            background-color: #FEF2F2;
-            color: #991B1B;
-            border: 1px solid #FCA5A5;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.65rem 1.25rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s ease;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background-color: var(--surface);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            background-color: var(--background);
-        }
-
-        .btn-success {
-            background-color: var(--success);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background-color: #059669;
-        }
-
-        .btn-danger {
-            background-color: var(--danger);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background-color: #DC2626;
-        }
-
-        .btn-sm {
-            padding: 0.4rem 0.75rem;
-            font-size: 0.825rem;
-        }
-
-        .card {
-            background: var(--surface);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            padding: 2rem;
-        }
-
-        footer {
-            background-color: var(--surface);
-            border-top: 1px solid var(--border);
-            text-align: center;
-            padding: 1.5rem;
-            font-size: 0.875rem;
-            color: var(--text-muted);
-        }
-
-        @@keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
+            font-family: 'DM Sans', sans-serif;
         }
     </style>
 </head>
-<body>
-    <header>
-        <div class="nav-container">
-            <a href="/" class="brand">
-                <span class="brand-badge">📍</span>
-                <span>ViaCEP Manager</span>
+<body class="flex flex-col min-h-full bg-slate-50 text-slate-800 antialiased font-sans">
+    <!-- Navbar Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2.5 font-sora font-bold text-xl text-indigo-600 hover:text-indigo-700 transition-colors">
+                <span class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 text-lg shadow-sm">
+                    <i class="fa-solid fa-location-dot"></i>
+                </span>
+                <span>ViaCEP<span class="text-slate-900">Manager</span></span>
             </a>
 
             @if (User.Identity?.IsAuthenticated == true)
             {
-                <div class="user-menu">
-                    <span class="user-greeting">Olá, <strong class="user-name">@User.Identity.Name</strong></span>
-                    <form asp-controller="Account" asp-action="Logout" method="post" style="display: inline;">
+                <div class="flex items-center gap-4">
+                    <div class="hidden sm:flex items-center gap-2 text-sm text-slate-600 bg-slate-100/80 px-3 py-1.5 rounded-lg border border-slate-200/60">
+                        <i class="fa-regular fa-user text-indigo-500"></i>
+                        <span>Olá, <strong class="font-semibold text-slate-900">@User.Identity.Name</strong></span>
+                    </div>
+
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="inline">
                         @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-secondary btn-sm">Sair</button>
+                        <button type="submit" class="inline-flex items-center justify-center px-3.5 py-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all shadow-sm">
+                            <i class="fa-solid fa-right-from-bracket mr-2 text-slate-400"></i> Sair
+                        </button>
                     </form>
                 </div>
             }
         </div>
     </header>
 
-    <main>
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         @if (TempData["Sucesso"] != null)
         {
-            <div class="alert alert-success">
-                <span>✅</span> @TempData["Sucesso"]
+            <div class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-3 shadow-sm animate-fade-in">
+                <i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>
+                <span class="font-medium text-sm">@TempData["Sucesso"]</span>
             </div>
         }
 
         @if (TempData["Erro"] != null)
         {
-            <div class="alert alert-danger">
-                <span>⚠️</span> @TempData["Erro"]
+            <div class="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 flex items-center gap-3 shadow-sm animate-fade-in">
+                <i class="fa-solid fa-triangle-exclamation text-rose-500 text-lg"></i>
+                <span class="font-medium text-sm">@TempData["Erro"]</span>
             </div>
         }
 
         @RenderBody()
     </main>
 
-    <footer>
-        <p>&copy; @DateTime.Now.Year - Desafio ViaCEP com C# .NET &amp; ASP.NET Core MVC</p>
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+            <p>&copy; @DateTime.Now.Year ViaCEP Manager - Desenvolvido com <i class="fa-solid fa-code text-indigo-500 mx-0.5"></i> C# .NET 9, ASP.NET Core MVC &amp; Tailwind CSS</p>
+        </div>
     </footer>
 
     @await RenderSectionAsync("Scripts", required: false)

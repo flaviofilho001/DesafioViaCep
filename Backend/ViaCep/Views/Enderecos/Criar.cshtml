@@ -3,145 +3,107 @@
     ViewData["Title"] = "Novo Endereço";
 }
 
-<style>
-    .form-header {
-        margin-bottom: 2rem;
-    }
+<div class="max-w-3xl mx-auto space-y-6">
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+        <h1 class="font-sora text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
+            <i class="fa-solid fa-plus-circle text-indigo-600"></i> Cadastrar Novo Endereço
+        </h1>
+        <p class="mt-1 text-sm text-slate-500 font-sans">
+            Digite o CEP para buscar o endereço automaticamente via API do ViaCEP ou insira os dados manualmente.
+        </p>
+    </div>
 
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        gap: 1.25rem;
-    }
+    <div class="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-sm">
+        <form asp-action="Criar" method="post" id="enderecoForm" class="space-y-6">
+            @Html.AntiForgeryToken()
 
-    .col-12 { grid-column: span 12; }
-    .col-8 { grid-column: span 8; }
-    .col-6 { grid-column: span 6; }
-    .col-4 { grid-column: span 4; }
-    .col-3 { grid-column: span 3; }
-    .col-2 { grid-column: span 2; }
-
-    @@media (max-width: 768px) {
-        .col-8, .col-6, .col-4, .col-3, .col-2 {
-            grid-column: span 12;
-        }
-    }
-
-    .form-group label {
-        display: block;
-        font-weight: 600;
-        font-size: 0.875rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        font-size: 0.95rem;
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-    }
-
-    .cep-container {
-        position: relative;
-    }
-
-    .cep-loading {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 0.85rem;
-        color: var(--primary);
-        font-weight: 600;
-        display: none;
-    }
-
-    .text-danger {
-        color: var(--danger);
-        font-size: 0.8rem;
-        margin-top: 0.35rem;
-        display: block;
-    }
-
-    .form-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 1rem;
-        margin-top: 2rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid var(--border);
-    }
-</style>
-
-<div class="form-header">
-    <h1>Cadastrar Novo Endereço 🏡</h1>
-    <p style="color: var(--text-muted);">Digite o CEP para buscar o endereço automaticamente via API do ViaCEP ou insira manualmente.</p>
-</div>
-
-<div class="card">
-    <form asp-action="Criar" method="post" id="enderecoForm">
-        @Html.AntiForgeryToken()
-
-        <div class="form-grid">
-            <div class="form-group col-4">
-                <label asp-for="Cep"></label>
-                <div class="cep-container">
-                    <input asp-for="Cep" id="inputCep" class="form-control" placeholder="00000-000" maxlength="9" autofocus />
-                    <span id="cepLoading" class="cep-loading">🔍 Buscando...</span>
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-6">
+                <!-- CEP Field -->
+                <div class="sm:col-span-4 space-y-2">
+                    <label asp-for="Cep" class="block text-sm font-semibold text-slate-700">CEP</label>
+                    <div class="relative rounded-xl shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-map-pin text-sm"></i>
+                        </div>
+                        <input asp-for="Cep" id="inputCep" 
+                               class="block w-full pl-10 pr-10 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-mono transition-all" 
+                               placeholder="00000-000" maxlength="9" autofocus />
+                        <div id="cepLoading" class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none hidden">
+                            <i class="fa-solid fa-circle-notch fa-spin text-indigo-600"></i>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Cep" class="text-xs text-rose-600 font-medium"></span>
+                    <span id="cepStatus" class="text-xs font-medium block mt-1"></span>
                 </div>
-                <span asp-validation-for="Cep" class="text-danger"></span>
-                <span id="cepStatus" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; display: block;"></span>
+
+                <!-- Logradouro -->
+                <div class="sm:col-span-8 space-y-2">
+                    <label asp-for="Logradouro" class="block text-sm font-semibold text-slate-700">Logradouro</label>
+                    <input asp-for="Logradouro" id="inputLogradouro" 
+                           class="block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all" 
+                           placeholder="Rua, Avenida, Alameda..." />
+                    <span asp-validation-for="Logradouro" class="text-xs text-rose-600 font-medium"></span>
+                </div>
+
+                <!-- Número -->
+                <div class="sm:col-span-4 space-y-2">
+                    <label asp-for="Numero" class="block text-sm font-semibold text-slate-700">Número</label>
+                    <input asp-for="Numero" id="inputNumero" 
+                           class="block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all" 
+                           placeholder="Nº (Ex: 123 ou S/N)" />
+                    <span asp-validation-for="Numero" class="text-xs text-rose-600 font-medium"></span>
+                </div>
+
+                <!-- Complemento -->
+                <div class="sm:col-span-8 space-y-2">
+                    <label asp-for="Complemento" class="block text-sm font-semibold text-slate-700">Complemento (opcional)</label>
+                    <input asp-for="Complemento" id="inputComplemento" 
+                           class="block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all" 
+                           placeholder="Apto, Bloco, Casa..." />
+                    <span asp-validation-for="Complemento" class="text-xs text-rose-600 font-medium"></span>
+                </div>
+
+                <!-- Bairro -->
+                <div class="sm:col-span-5 space-y-2">
+                    <label asp-for="Bairro" class="block text-sm font-semibold text-slate-700">Bairro</label>
+                    <input asp-for="Bairro" id="inputBairro" 
+                           class="block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all" 
+                           placeholder="Bairro..." />
+                    <span asp-validation-for="Bairro" class="text-xs text-rose-600 font-medium"></span>
+                </div>
+
+                <!-- Cidade -->
+                <div class="sm:col-span-5 space-y-2">
+                    <label asp-for="Cidade" class="block text-sm font-semibold text-slate-700">Cidade</label>
+                    <input asp-for="Cidade" id="inputCidade" 
+                           class="block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all" 
+                           placeholder="Cidade..." />
+                    <span asp-validation-for="Cidade" class="text-xs text-rose-600 font-medium"></span>
+                </div>
+
+                <!-- UF -->
+                <div class="sm:col-span-2 space-y-2">
+                    <label asp-for="Uf" class="block text-sm font-semibold text-slate-700">UF</label>
+                    <input asp-for="Uf" id="inputUf" 
+                           class="block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-mono uppercase text-center transition-all" 
+                           placeholder="UF" maxlength="2" />
+                    <span asp-validation-for="Uf" class="text-xs text-rose-600 font-medium"></span>
+                </div>
             </div>
 
-            <div class="form-group col-8">
-                <label asp-for="Logradouro"></label>
-                <input asp-for="Logradouro" id="inputLogradouro" class="form-control" placeholder="Rua, Avenida..." />
-                <span asp-validation-for="Logradouro" class="text-danger"></span>
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-3 pt-6 border-t border-slate-200">
+                <a asp-action="Index" 
+                   class="px-5 py-3 border border-slate-300 rounded-xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 transition-all">
+                    Cancelar
+                </a>
+                <button type="submit" 
+                        class="inline-flex items-center px-6 py-3 border border-transparent rounded-xl shadow-md text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
+                    <i class="fa-solid fa-floppy-disk mr-2"></i> Salvar Endereço
+                </button>
             </div>
-
-            <div class="form-group col-4">
-                <label asp-for="Numero"></label>
-                <input asp-for="Numero" id="inputNumero" class="form-control" placeholder="Nº Ex: 123 ou S/N" />
-                <span asp-validation-for="Numero" class="text-danger"></span>
-            </div>
-
-            <div class="form-group col-8">
-                <label asp-for="Complemento"></label>
-                <input asp-for="Complemento" id="inputComplemento" class="form-control" placeholder="Apto, Bloco, Casa (opcional)" />
-                <span asp-validation-for="Complemento" class="text-danger"></span>
-            </div>
-
-            <div class="form-group col-5">
-                <label asp-for="Bairro"></label>
-                <input asp-for="Bairro" id="inputBairro" class="form-control" placeholder="Bairro..." />
-                <span asp-validation-for="Bairro" class="text-danger"></span>
-            </div>
-
-            <div class="form-group col-5">
-                <label asp-for="Cidade"></label>
-                <input asp-for="Cidade" id="inputCidade" class="form-control" placeholder="Cidade..." />
-                <span asp-validation-for="Cidade" class="text-danger"></span>
-            </div>
-
-            <div class="form-group col-2">
-                <label asp-for="Uf"></label>
-                <input asp-for="Uf" id="inputUf" class="form-control" placeholder="UF" maxlength="2" style="text-transform: uppercase;" />
-                <span asp-validation-for="Uf" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="form-actions">
-            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-            <button type="submit" class="btn btn-primary">Salvar Endereço</button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
 @section Scripts {
@@ -161,9 +123,9 @@
                 const cepLimpo = cep.replace(/\D/g, '');
                 if (cepLimpo.length !== 8) return;
 
-                cepLoading.style.display = 'block';
-                cepStatus.textContent = 'Buscando dados no ViaCEP...';
-                cepStatus.style.color = 'var(--primary)';
+                cepLoading.classList.remove('hidden');
+                cepStatus.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-indigo-500 mr-1"></i> Buscando dados no ViaCEP...';
+                cepStatus.className = 'text-xs font-medium block mt-1 text-indigo-600';
 
                 try {
                     const response = await fetch(`/api/viacep/${cepLimpo}`);
@@ -176,16 +138,16 @@
                     inputCidade.value = dados.localidade || '';
                     inputUf.value = (dados.uf || '').toUpperCase();
 
-                    cepStatus.textContent = '✅ Endereço localizado via ViaCEP!';
-                    cepStatus.style.color = 'var(--success)';
+                    cepStatus.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i> Endereço localizado via ViaCEP!';
+                    cepStatus.className = 'text-xs font-medium block mt-1 text-emerald-600';
 
-                    // Foco automático no campo Número
+                    // Foco automático no número
                     inputNumero.focus();
                 } catch (error) {
-                    cepStatus.textContent = '⚠️ CEP não encontrado. Preencha manualmente.';
-                    cepStatus.style.color = 'var(--danger)';
+                    cepStatus.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1"></i> CEP não localizado no ViaCEP. Preencha manualmente.';
+                    cepStatus.className = 'text-xs font-medium block mt-1 text-amber-600';
                 } finally {
-                    cepLoading.style.display = 'none';
+                    cepLoading.classList.add('hidden');
                 }
             }
 

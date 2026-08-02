@@ -3,153 +3,106 @@
     ViewData["Title"] = "Meus Endereços";
 }
 
-<style>
-    .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    .page-title h1 {
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: var(--text-main);
-    }
-
-    .page-title p {
-        color: var(--text-muted);
-        font-size: 0.9rem;
-        margin-top: 0.25rem;
-    }
-
-    .actions-bar {
-        display: flex;
-        gap: 0.75rem;
-    }
-
-    .table-container {
-        overflow-x: auto;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        text-align: left;
-    }
-
-    th {
-        background-color: var(--background);
-        padding: 0.85rem 1rem;
-        font-size: 0.8rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-muted);
-        border-bottom: 1px solid var(--border);
-    }
-
-    td {
-        padding: 1rem;
-        border-bottom: 1px solid var(--border);
-        font-size: 0.9rem;
-        vertical-align: middle;
-    }
-
-    tr:hover {
-        background-color: #F1F5F9;
-    }
-
-    .cep-badge {
-        background-color: var(--primary-light);
-        color: var(--primary);
-        font-weight: 600;
-        padding: 0.25rem 0.6rem;
-        border-radius: 6px;
-        font-size: 0.85rem;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 3rem 1rem;
-        color: var(--text-muted);
-    }
-
-    .empty-state-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-    }
-</style>
-
-<div class="page-header">
-    <div class="page-title">
-        <h1>Meus Endereços 🏡</h1>
-        <p>Gerencie seus endereços salvos ou faça a exportação dos dados.</p>
-    </div>
-    <div class="actions-bar">
-        <a asp-action="ExportarCsv" class="btn btn-secondary">
-            📥 Exportar em CSV
-        </a>
-        <a asp-action="Criar" class="btn btn-primary">
-            ➕ Novo Endereço
-        </a>
-    </div>
-</div>
-
-<div class="card" style="padding: 0; overflow: hidden;">
-    @if (!Model.Any())
-    {
-        <div class="empty-state">
-            <div class="empty-state-icon">📭</div>
-            <h3>Nenhum endereço cadastrado</h3>
-            <p style="margin-top: 0.5rem; margin-bottom: 1.5rem;">Você ainda não possui endereços salvos. Clique no botão abaixo para adicionar.</p>
-            <a asp-action="Criar" class="btn btn-primary">Cadastrar Primeiro Endereço</a>
+<div class="space-y-6">
+    <!-- Header Page Actions -->
+    <div class="sm:flex sm:items-center sm:justify-between bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div>
+            <h1 class="font-sora text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
+                <i class="fa-solid fa-house-user text-indigo-600"></i> Meus Endereços
+            </h1>
+            <p class="mt-1 text-sm text-slate-500 font-sans">
+                Gerencie seus endereços salvos ou faça a exportação dos dados.
+            </p>
         </div>
-    }
-    else
-    {
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>CEP</th>
-                        <th>Logradouro</th>
-                        <th>Número</th>
-                        <th>Complemento</th>
-                        <th>Bairro</th>
-                        <th>Cidade / UF</th>
-                        <th style="text-align: right;">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+        <div class="mt-4 sm:mt-0 flex items-center gap-3">
+            <a asp-action="ExportarCsv" 
+               class="inline-flex items-center px-4 py-2.5 border border-slate-300 rounded-xl shadow-sm text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
+                <i class="fa-solid fa-file-csv text-emerald-600 text-base mr-2"></i> Exportar em CSV
+            </a>
+            <a asp-action="Criar" 
+               class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-xl shadow-md text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
+                <i class="fa-solid fa-plus mr-2"></i> Novo Endereço
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content Table or Empty State -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        @if (!Model.Any())
+        {
+            <div class="text-center py-16 px-4">
+                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 text-2xl mx-auto mb-4">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+                <h3 class="font-sora text-lg font-semibold text-slate-900">Nenhum endereço cadastrado</h3>
+                <p class="mt-1 text-sm text-slate-500 max-w-sm mx-auto">
+                    Você ainda não possui endereços salvos na sua conta. Clique no botão abaixo para adicionar.
+                </p>
+                <div class="mt-6">
+                    <a asp-action="Criar" class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-xl shadow-md text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-all">
+                        <i class="fa-solid fa-plus mr-2"></i> Cadastrar Primeiro Endereço
+                    </a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-200">
+                    <thead class="bg-slate-50/80">
                         <tr>
-                            <td>
-                                <span class="cep-badge">@item.Cep</span>
-                            </td>
-                            <td><strong>@item.Logradouro</strong></td>
-                            <td>@item.Numero</td>
-                            <td>@(string.IsNullOrWhiteSpace(item.Complemento) ? "-" : item.Complemento)</td>
-                            <td>@item.Bairro</td>
-                            <td>@item.Cidade / @item.Uf</td>
-                            <td style="text-align: right; white-space: nowrap;">
-                                <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-secondary btn-sm" title="Editar">
-                                    ✏️ Editar
-                                </a>
-                                <form asp-action="Excluir" asp-route-id="@item.Id" method="post" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja excluir este endereço?');">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-danger btn-sm" title="Excluir">
-                                        🗑️ Excluir
-                                    </button>
-                                </form>
-                            </td>
+                            <th scope="col" class="px-6 py-3.5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">CEP</th>
+                            <th scope="col" class="px-6 py-3.5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Logradouro</th>
+                            <th scope="col" class="px-6 py-3.5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Número</th>
+                            <th scope="col" class="px-6 py-3.5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Complemento</th>
+                            <th scope="col" class="px-6 py-3.5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Bairro</th>
+                            <th scope="col" class="px-6 py-3.5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Cidade / UF</th>
+                            <th scope="col" class="px-6 py-3.5 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Ações</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
+                    </thead>
+                    <tbody class="bg-white divide-y divide-slate-200">
+                        @foreach (var item in Model)
+                        {
+                            <tr class="hover:bg-slate-50/60 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100 font-mono">
+                                        <i class="fa-solid fa-map-pin text-[10px] text-indigo-500"></i>
+                                        @item.Cep
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900">
+                                    @item.Logradouro
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                                    @item.Numero
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                    @(string.IsNullOrWhiteSpace(item.Complemento) ? "-" : item.Complemento)
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                                    @item.Bairro
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                                    <span class="font-medium text-slate-900">@item.Cidade</span> / <span class="text-xs uppercase font-bold text-slate-500">@item.Uf</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                    <a asp-action="Editar" asp-route-id="@item.Id" 
+                                       class="inline-flex items-center px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 transition-all">
+                                        <i class="fa-solid fa-pen-to-square text-indigo-600 mr-1.5"></i> Editar
+                                    </a>
+                                    <form asp-action="Excluir" asp-route-id="@item.Id" method="post" class="inline" onsubmit="return confirm('Tem certeza que deseja excluir este endereço?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" 
+                                                class="inline-flex items-center px-3 py-1.5 border border-rose-200 rounded-lg text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 transition-all">
+                                            <i class="fa-solid fa-trash-can text-rose-600 mr-1.5"></i> Excluir
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
 </div>
